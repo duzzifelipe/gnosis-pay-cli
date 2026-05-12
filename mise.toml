@@ -3,3 +3,7 @@ go = "latest"
 
 [env]
 _.file = ".env"
+
+[tasks.build]
+description = "Build the gnosis-pay binary"
+run = "go build -o gnosis-pay ."
