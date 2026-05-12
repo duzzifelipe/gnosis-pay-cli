@@ -1,0 +1,23 @@
+# Binary
+gnosis-pay
+
+# State file (contains JWT and wallet info)
+.gnosis-pay-state.json
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
