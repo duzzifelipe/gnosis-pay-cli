@@ -95,7 +95,7 @@ func Domain() string {
 	if domain == "" {
 		// Default: use a generic placeholder domain
 		// Users should set GNOSIS_PAY_DOMAIN to their actual domain
-		return "example.com"
+		return "localhost"
 	}
 	return domain
 }

@@ -26,7 +26,7 @@ var authCmd = &cobra.Command{
 Required environment variables:
   GNOSIS_PAY_PRIVATE_KEY    Hex-encoded Ethereum private key
 
-Optional environment variables (default to example.com):
+Optional environment variables (default to localhost):
   GNOSIS_PAY_DOMAIN         Domain for SIWE message (e.g., yourapp.com)
   GNOSIS_PAY_URI            URI for SIWE message (e.g., https://yourapp.com)
 
