@@ -82,31 +82,31 @@ func parseJWTClaims(token string) (*jwtClaims, error) {
 	return &claims, nil
 }
 
-func GetAuthToken() (string, error) {
+func GetAuthToken() (string, *State, error) {
 	state, err := LoadState()
 	if err != nil {
-		return "", fmt.Errorf("load state: %w", err)
+		return "", nil, fmt.Errorf("load state: %w", err)
 	}
 
 	if state.JWT != "" {
 		claims, err := parseJWTClaims(state.JWT)
 		if err == nil && claims.UserID != "" {
-			return state.JWT, nil
+			return state.JWT, state, nil
 		}
 	}
 
 	if state.UserJWT != "" {
 		claims, err := parseJWTClaims(state.UserJWT)
 		if err != nil {
-			return "", fmt.Errorf("parse userJwt: %w", err)
+			return "", nil, fmt.Errorf("parse userJwt: %w", err)
 		}
 		if claims.Exp > 0 && time.Now().Unix() > claims.Exp {
-			return "", fmt.Errorf("userJwt is expired")
+			return "", nil, fmt.Errorf("userJwt is expired")
 		}
-		return state.UserJWT, nil
+		return state.UserJWT, state, nil
 	}
 
-	return "", fmt.Errorf("not authenticated: run 'signup' or 'login' first")
+	return "", nil, fmt.Errorf("not authenticated: run 'signup' or 'login' first")
 }
 
 // Save persists the state to disk.

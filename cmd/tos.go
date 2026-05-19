@@ -18,7 +18,7 @@ var tosCmd = &cobra.Command{
 	Long: `Fetches all terms of service and accepts any that haven't been accepted yet.
 Requires prior authentication and registration.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		token, err := config.GetAuthToken()
+		token, _, err := config.GetAuthToken()
 		if err != nil {
 			return fmt.Errorf("get auth token: %w", err)
 		}
