@@ -80,8 +80,20 @@ Requires prior authentication (run 'gnosis-pay auth' first).`,
 		fmt.Println("User registered successfully!")
 		fmt.Println(apiclient.PrettyJSON(resp.Body))
 
-		// Save email to state
+		// Extract user JWT from response
+		var signupResp map[string]interface{}
+		userID := ""
+		userJWT := ""
+		if err := resp.JSON(&signupResp); err == nil {
+			userJWT = signupResp["token"].(string)
+			userID = signupResp["id"].(string)
+		}
+
+		// Save email and user JWT to state
 		state.Email = signupEmail
+		state.UserJWT = userJWT
+		state.UserID = userID
+			
 		if err := state.Save(); err != nil {
 			return fmt.Errorf("save state: %w", err)
 		}

@@ -1,10 +1,13 @@
 package config
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 const (
@@ -21,6 +24,7 @@ const (
 // State persists between CLI invocations.
 type State struct {
 	JWT         string `json:"jwt,omitempty"`
+	UserJWT     string `json:"userJwt,omitempty"`
 	Address     string `json:"address,omitempty"`
 	UserID      string `json:"userId,omitempty"`
 	SafeAddress string `json:"safeAddress,omitempty"`
@@ -56,6 +60,56 @@ func LoadState() (*State, error) {
 	}
 	return &s, nil
 }
+
+type jwtClaims struct {
+	UserID string `json:"userId"`
+	Exp    int64  `json:"exp"`
+}
+
+func parseJWTClaims(token string) (*jwtClaims, error) {
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("invalid JWT format")
+	}
+	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("decode JWT payload: %w", err)
+	}
+	var claims jwtClaims
+	if err := json.Unmarshal(payload, &claims); err != nil {
+		return nil, fmt.Errorf("parse JWT claims: %w", err)
+	}
+	return &claims, nil
+}
+
+func GetAuthToken() (string, error) {
+	state, err := LoadState()
+	if err != nil {
+		return "", fmt.Errorf("load state: %w", err)
+	}
+
+	if state.JWT != "" {
+		claims, err := parseJWTClaims(state.JWT)
+		if err == nil && claims.UserID != "" {
+			return state.JWT, nil
+		}
+	}
+
+	if state.UserJWT != "" {
+		claims, err := parseJWTClaims(state.UserJWT)
+		if err != nil {
+			return "", fmt.Errorf("parse userJwt: %w", err)
+		}
+		if claims.Exp > 0 && time.Now().Unix() > claims.Exp {
+			return "", fmt.Errorf("userJwt is expired")
+		}
+		return state.UserJWT, nil
+	}
+
+	return "", fmt.Errorf("not authenticated: run 'signup' or 'login' first")
+}
+
+// Save persists the state to disk.
 
 // Save writes the state to disk.
 func (s *State) Save() error {

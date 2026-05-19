@@ -37,7 +37,7 @@ func BuildSIWEMessage(domain, uri, address, nonce string, chainID int) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s wants you to sign in with your Ethereum account:\n", domain)
 	fmt.Fprintf(&b, "%s\n\n", address)
-	fmt.Fprintf(&b, "Sign in to Gnosis Pay\n\n")
+	fmt.Fprintf(&b, "Sign in with Ethereum to the app.\n\n")
 	fmt.Fprintf(&b, "URI: %s\n", uri)
 	fmt.Fprintf(&b, "Version: 1\n")
 	fmt.Fprintf(&b, "Chain ID: %d\n", chainID)

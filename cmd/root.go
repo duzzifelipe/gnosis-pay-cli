@@ -17,6 +17,7 @@ Workflow (run each step in order):
   1. gnosis-pay wallet generate          Generate a new Ethereum wallet (private key + address)
   2. gnosis-pay auth                     Authenticate with SIWE
   3. gnosis-pay signup --email <email>   Register user
+  4. gnosis-pay tos                      Accept terms of service
 
 Required environment variables:
   GNOSIS_PAY_PRIVATE_KEY   Hex-encoded Ethereum private key (generated with 'gnosis-pay wallet generate' or your own key)
